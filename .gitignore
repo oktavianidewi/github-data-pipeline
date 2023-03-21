@@ -1,1 +1,4 @@
 data/*
+infra/dwh/.terraform
+infra/sa/.terraform
+infra/vm/.terraform

@@ -1,5 +1,8 @@
 data/*
 infra/dwh/.terraform
 infra/sa/.terraform
+infra/sa/terraform.tfstate
+infra/sa/terraform.tfstate.backup
+infra/sa/.terraform.lock.hcl
 infra/vm/.terraform
 sa-project-batch.json

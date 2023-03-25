@@ -1,0 +1,27 @@
+
+
+============================== 2023-03-25 06:06:34.825352 | 76b4cf9a-de1e-4611-a7b7-e93b3003e1f3 ==============================
+[0m06:06:34.825352 [info ] [MainThread]: Running with dbt=1.4.5
+[0m06:06:34.827189 [debug] [MainThread]: running dbt with arguments {'write_json': True, 'use_colors': True, 'printer_width': 80, 'version_check': True, 'partial_parse': True, 'static_parser': True, 'profiles_dir': '/home/oktavianidewi/.dbt', 'send_anonymous_usage_stats': True, 'quiet': False, 'no_print': False, 'cache_selected_only': False, 'skip_profile_setup': False, 'which': 'init', 'indirect_selection': 'eager'}
+[0m06:06:34.828121 [debug] [MainThread]: Tracking: tracking
+[0m06:06:34.849131 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'start', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f66078589d0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f6607854820>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f6607854c70>]}
+[0m06:07:16.399789 [debug] [MainThread]: Starter project path: /home/oktavianidewi/.local/share/virtualenvs/github-data-pipeline-Imre46JX/lib/python3.8/site-packages/dbt/include/starter_project
+[0m06:08:44.790505 [info ] [MainThread]: Profile dbt_project_github written to /home/oktavianidewi/.dbt/profiles.yml using target's profile_template.yml and your supplied values. Run 'dbt debug' to validate the connection.
+[0m06:08:44.791657 [info ] [MainThread]: 
+Your new dbt project "dbt_project_github" was created!
+
+For more information on how to configure the profiles.yml file,
+please consult the dbt documentation here:
+
+  https://docs.getdbt.com/docs/configure-your-profile
+
+One more thing:
+
+Need help? Don't hesitate to reach out to us via GitHub issues or on Slack:
+
+  https://community.getdbt.com/
+
+Happy modeling!
+
+[0m06:08:44.792641 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f65e66f56a0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f66078b1070>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x7f66078b1430>]}
+[0m06:08:44.793724 [debug] [MainThread]: Flushing usage events

@@ -1,8 +1,10 @@
 from pathlib import Path
 import pandas as pd
+import os
 from prefect import flow, task
 from prefect_gcp.cloud_storage import GcsBucket
 from random import randint
+import json
 
 
 @task(retries=3)
@@ -11,26 +13,39 @@ def fetch(dataset_url: str) -> pd.DataFrame:
     # if randint(0, 1) > 0:
     #     raise Exception
 
-    df = pd.read_csv(dataset_url)
+    header = {'User-Agent': 'pandas'}
+    df = pd.read_json(dataset_url, lines=True, storage_options=header, compression="gzip")
     return df
 
 
-@task(log_prints=True)
+@task(retries=3, log_prints=True)
 def clean(df: pd.DataFrame) -> pd.DataFrame:
     """Fix dtype issues"""
-    df["tpep_pickup_datetime"] = pd.to_datetime(df["tpep_pickup_datetime"])
-    df["tpep_dropoff_datetime"] = pd.to_datetime(df["tpep_dropoff_datetime"])
-    print(df.head(2))
-    print(f"columns: {df.dtypes}")
+    df["id"] = df["id"].astype("Int64")
+    df["payload"] = df["payload"].apply(lambda x: json.dumps(x)).astype("string")
+    df["type"] = df["type"].astype("string")
+    df["created_at"] = pd.to_datetime(df["created_at"])
+
+
+    # additional column for partition
+    df["year"], df["month"], df["day"] = df["created_at"].apply(lambda x: x.year), df["created_at"].apply(lambda x: x.month), df["created_at"].apply(lambda x: x.day)
+
     print(f"rows: {len(df)}")
+    print(f"columns: {df.dtypes}")
     return df
 
 
-@task()
-def write_local(df: pd.DataFrame, year: str, dataset_file: str) -> Path:
+@task(retries=3)
+def write_to_gcs(df: pd.DataFrame, dataset_file: str) -> Path:
     """Write DataFrame out locally as parquet file"""
-    path = Path(f"data/{year}/{dataset_file}.parquet")
-    df.to_parquet(path, compression="gzip")
+    
+    # create directory if not exist
+    dir = f"data/"
+    if not os.path.isdir(dir):
+        os.makedirs(dir)
+
+    path = f"gs://tf_datalake_bucket_dtc-de-zoomcamp-2023-376219/data"
+    df.to_parquet(path, engine="pyarrow", compression="gzip", partition_cols=["year", "month", "day"])
     return path
 
 
@@ -38,26 +53,26 @@ def write_local(df: pd.DataFrame, year: str, dataset_file: str) -> Path:
 def write_gcs(path: Path) -> None:
     """Upload local parquet file to GCS"""
     # gcs_block = GcsBucket.load("zoom-gcs")
-    gcp_block = GcsBucket.load("prefect-de-zoomcamp-gcs")
+    gcp_block = GcsBucket.load("project-batch")
     gcp_block.upload_from_path(from_path=path, to_path=path)
     return
 
 
 @flow()
 def etl_web_to_gcs() -> None:
+    # TODO: parameterized
     """The main ETL function"""
-    year = 2021
-    month = 1
+    year = 2023
+    month = "01" # 01..12
     day = "01" # 01..31
-    hour = "1" # 0..23
-    dataset_file = f"{year}-{month}-{day}-{hour}"
-    dataset_url = f"https://data.gharchive.org/{year}-{month}-{day}-{hour}.json.gz"
-
-    df = fetch(dataset_url)
-    df_clean = clean(df)
-    write_local(df_clean, year, dataset_file)
-    # path = write_local(df_clean, year, dataset_file)
-    # write_gcs(path)
+    # TODO: every 10 min run job to ingest hourly data
+    for hour in range (1,24):
+        print(f"Write hour-{hour}")
+        dataset_file = f"{year}-{month}-{day}-{hour}"
+        dataset_url = f"https://data.gharchive.org/{year}-{month}-{day}-{hour}.json.gz"
+        df = fetch(dataset_url)
+        df_clean = clean(df)
+        write_to_gcs(df_clean, dataset_file)
 
 
 if __name__ == "__main__":

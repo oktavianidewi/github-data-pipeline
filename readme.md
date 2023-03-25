@@ -1,13 +1,49 @@
 Target: 
 - [DONE] create iam with terraform
 - [DONE] create gcs bucket and bq with terraform
-- run prefect in docker
-- create block prefect programmatically, with defined SA ?
-- run docker environment in VM
-- python code to ingest data to GCS
-- create external table Bigquery to load GCS via terraform
+- [DONE] python code to ingest data to local
+- [DONE] create downloadable service-account .json key with terraform
+    - https://stackoverflow.com/questions/59736621/dumping-terraform-output-to-a-local-file
+- [DONE] create block prefect programmatically
+- [DONE] python code to ingest data to GCS (parquet partitioned by created_at) -> why data always stopped on month of 3?
+- [DONE] create external table Bigquery to load partitioned GCS via terraform.
+schema: 
+```
+    type                       string
+    actor                      record
+    repo                       record
+    payload                    string
+    public                       bool
+    created_at    datetime64[ns, UTC]
+    org                        record
+    year                        int64
+    month                       int64
+    day                         int64
+```
+https://vazid.medium.com/create-dataset-and-table-in-bigquery-using-terraform-c89a5affa61b
+https://github.com/terraform-google-modules/terraform-google-bigquery/blob/master/main.tf
+
+- [DONE] install dbt bigquery local, dbt init dll
+- [DONE] manage duplicate data in staging models with incremental model
+- [DONE] manage partition in bigquery with dbt 
+    https://docs.getdbt.com/reference/resource-configs/bigquery-configs
+- [PARTIAL] data modeling in dbt layers
+- parameterized prefect
+- set prefect to run ingestion job (hourly data) every 10 min
+- trigger dbt command from prefect 
+    https://prefecthq.github.io/prefect-dbt/
+- [DONE] manage nested data in bigquery
+    - can dbt-bigquery access nested json and fulfill my metrics? CAN! in bigquery, nested is better than join. since it supports bigquery nested tools. https://medium.com/google-cloud/bigquery-explained-working-with-joins-nested-repeated-data-1941646ccb5b
+
+create reproducible environment
 - setup dbt-bigquery in docker 
     - https://github.com/rocketechgroup/dbt-container-for-bigquery/blob/master/Dockerfile
+    - https://www.dumky.net/posts/dbt-in-a-box-using-google-cloud-run-and-bigquery-to-run-your-dbt-sql-models-from-a-docker-container/
+    - https://blog.devops.dev/end-to-end-dbt-project-in-google-cloud-platform-part-2-d779ce8cc3d7
+- create daily scheduler
+- run prefect in docker
+    - https://medium.com/@danilo.drobac/7-a-complete-google-cloud-deployment-of-prefect-2-0-32b8e3c2febe
+- run docker environment in VM
 - looker 
 
 

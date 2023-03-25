@@ -6,6 +6,12 @@ name = "pypi"
 [packages]
 pandas = "*"
 prefect = "*"
+fastparquet = "*"
+pyarrow = "*"
+prefect-gcp = {extras = ["cloud_storage"], version = "*"}
+gcsfs = "*"
+dbt-core = "*"
+dbt-bigquery = "*"
 
 [dev-packages]
 

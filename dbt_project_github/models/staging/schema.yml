@@ -1,0 +1,37 @@
+version: 2
+
+sources: 
+  - name: staging
+    database: dtc-de-zoomcamp-2023-376219 # database = project_id in bq
+    schema: tf_dataset_bq # schema = dataset in bq
+
+    tables: 
+      - name: tf_table_github
+
+models:
+  - name: stg_github_data
+    description: "data in staging layer is guaranteed to not redundant"
+    columns:
+      - name: id
+        description: "The primary key for this table"
+        tests:
+          - unique
+      - name: type
+      - name: actor
+      - name: repo
+      - name: payload
+      - name: public
+      - name: created_at
+      - name: org
+      - name: year
+      - name: month
+      - name: day
+
+#   - name: my_second_dbt_model
+#     description: "A starter dbt model"
+#     columns:
+#       - name: id
+#         description: "The primary key for this table"
+#         tests:
+#           - unique
+#           - not_null

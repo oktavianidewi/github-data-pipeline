@@ -27,13 +27,18 @@ https://github.com/terraform-google-modules/terraform-google-bigquery/blob/maste
 - [DONE] manage duplicate data in staging models with incremental model
 - [DONE] manage partition in bigquery with dbt 
     https://docs.getdbt.com/reference/resource-configs/bigquery-configs
-- [PARTIAL] data modeling in dbt layers
+- [DONE] data modeling in dbt layers
+
 - parameterized prefect
 - set prefect to run ingestion job (hourly data) every 10 min
 - trigger dbt command from prefect 
     https://prefecthq.github.io/prefect-dbt/
+
+- looker: https://lookerstudio.google.com/s/o-d0Q4Vu5wk
 - [DONE] manage nested data in bigquery
     - can dbt-bigquery access nested json and fulfill my metrics? CAN! in bigquery, nested is better than join. since it supports bigquery nested tools. https://medium.com/google-cloud/bigquery-explained-working-with-joins-nested-repeated-data-1941646ccb5b
+- setup prod target in profile.yml
+
 
 create reproducible environment
 - setup dbt-bigquery in docker 
@@ -64,13 +69,32 @@ GitHub is where people build software. More than 100 million people use GitHub t
 
 Interesting metrics (2023-current): 
 user's metrics:
-- daily most active repository (counted by push) 20
-- daily most active users (counter by number of push) 20
-- daily most active organizations (counter by number of push) 20
-- daily heatmap graph showing active hour 
-- daily number of event based on its type (PushEvent: 100, PullRequestEvent:300, etc)
+- [DONE] daily most issue created from repository
+- [DONE] daily most forked repository
+- [DONE] daily most active users (counter by number of push)
+- [DONE] daily most active repos (counter by number of PR)
+- [DONE] daily most active organizations (counter by number of PR)
+- [DONE] daily heatmap graph showing active hour 
+- [DONE] daily number of event based on its type (PushEvent: 100, PullRequestEvent:300, etc)
 
 https://gitstar-ranking.com/
+
+events: 
+- "PushEvent"
+- "CreateEvent"
+- "PullRequestEvent"
+- "ForkEvent"
+- "IssuesEvent"
+- "WatchEvent"
+- "IssueCommentEvent"
+- "DeleteEvent"
+- "CommitCommentEvent"
+- "ReleaseEvent"
+- "PullRequestReviewEvent"
+- "MemberEvent"
+- "PullRequestReviewCommentEvent"
+- "PublicEvent"
+- "GollumEvent"
 
 ## Cloud
 

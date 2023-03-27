@@ -1,0 +1,38 @@
+version: 2
+
+sources: 
+  - name: staging
+    database: dtc-de-zoomcamp-2023-376219 # database = project_id in bq
+    schema: tf_dataset_bq # schema = dataset in bq
+
+    tables: 
+      - name: stg_github_data
+
+  - name: core
+    database: dtc-de-zoomcamp-2023-376219 # database = project_id in bq
+    schema: tf_dataset_bq # schema = dataset in bq
+
+    tables: 
+      - name: fact_github_events_by_human
+
+models: 
+  - name: fact_github_events_by_human
+    description: "fact table in core layer that filtered out bot activities"
+    columns:
+      - name: id
+        description: "The primary key for this table"
+        tests:
+          - unique
+  - name: dim_daily_active_orgs
+    description: "dim table that stores daily active organizations measured by its PullRequestEvent"
+    columns:
+      - name: org_login
+        description: "Organization name of the repository"
+        tests:
+          - not_null:
+                severity: error
+      - name: num_of_events
+        description: "Aggregation metrics on this table"
+        tests:
+          - not_null:
+                severity: error

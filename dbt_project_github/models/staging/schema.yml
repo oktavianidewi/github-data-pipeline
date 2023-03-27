@@ -4,13 +4,13 @@ sources:
   - name: staging
     database: dtc-de-zoomcamp-2023-376219 # database = project_id in bq
     schema: tf_dataset_bq # schema = dataset in bq
-
     tables: 
       - name: tf_table_github
-
+      # - name: stg_github_data
+  
 models:
   - name: stg_github_data
-    description: "data in staging layer is guaranteed to not redundant"
+    description: "data in staging layer is guaranteed to not redundant and not containing any bot user's activities"
     columns:
       - name: id
         description: "The primary key for this table"

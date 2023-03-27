@@ -59,12 +59,8 @@ def write_gcs(path: Path) -> None:
 
 
 @flow()
-def etl_web_to_gcs() -> None:
-    # TODO: parameterized
+def etl_web_to_gcs(year, month, day) -> None:
     """The main ETL function"""
-    year = 2023
-    month = "01" # 01..12
-    day = "01" # 01..31
     # TODO: every 10 min run job to ingest hourly data
     for hour in range (1,24):
         print(f"Write hour-{hour}")
@@ -76,4 +72,8 @@ def etl_web_to_gcs() -> None:
 
 
 if __name__ == "__main__":
-    etl_web_to_gcs()
+    # TODO: parameterized
+    year = 2023
+    month = "01" # 01..12
+    day = "01" # 01..31
+    etl_web_to_gcs(year, month, day)

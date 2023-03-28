@@ -39,6 +39,7 @@ https://github.com/terraform-google-modules/terraform-google-bigquery/blob/maste
 - [DONE] trigger dbt command from prefect.
     - untuk jalanin command dbt seperti `dbt run` setiap setelah data ingestion
     https://prefecthq.github.io/prefect-dbt/
+- [DONE] env variables
 - [DONE] manage nested data in bigquery
     - can dbt-bigquery access nested json and fulfill my metrics? CAN! in bigquery, nested is better than join. since it supports bigquery nested tools. https://medium.com/google-cloud/bigquery-explained-working-with-joins-nested-repeated-data-1941646ccb5b
 - looker: https://lookerstudio.google.com/s/o-d0Q4Vu5wk

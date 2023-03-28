@@ -13,6 +13,7 @@ gcsfs = "*"
 dbt-core = "*"
 dbt-bigquery = "*"
 dask = "*"
+prefect-dbt = {extras = ["bigquery"], version = "*"}
 
 [dev-packages]
 

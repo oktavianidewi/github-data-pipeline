@@ -6,3 +6,4 @@ infra/sa/terraform.tfstate.backup
 infra/sa/.terraform.lock.hcl
 infra/vm/.terraform
 sa-project-batch.json
+*-deployment.yaml

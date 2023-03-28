@@ -15,6 +15,8 @@ locals {
 
   storage_class    = "STANDARD"
   data_lake_bucket = "tf_datalake_bucket"
+  dev_bq_dataset   = "dev_github"
+  prod_bq_dataset  = "prod_github"
   bq_dataset       = "tf_dataset_bq"
   table_id         = "tf_table_github"
 }
@@ -76,6 +78,18 @@ resource "google_storage_bucket" "data-lake-bucket" {
 
 resource "google_bigquery_dataset" "dataset" {
   dataset_id = local.bq_dataset
+  project    = local.project_id
+  location   = local.region
+}
+
+resource "google_bigquery_dataset" "dev_dataset" {
+  dataset_id = local.dev_bq_dataset
+  project    = local.project_id
+  location   = local.region
+}
+
+resource "google_bigquery_dataset" "prod_dataset" {
+  dataset_id = local.prod_bq_dataset
   project    = local.project_id
   location   = local.region
 }

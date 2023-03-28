@@ -29,15 +29,20 @@ https://github.com/terraform-google-modules/terraform-google-bigquery/blob/maste
     https://docs.getdbt.com/reference/resource-configs/bigquery-configs
 - [DONE] data modeling in dbt layers
 
-- parameterized prefect
-- set prefect to run ingestion job (hourly data) every 10 min
-- trigger dbt command from prefect 
+- [DONE] parameterized prefect
+- [DONE] python chunk when read df and load to gcs
+    - write data to_parquet -> https://outerbounds.com/docs/chunk-df/
+- [DONE] set prefect to run ingestion job (hourly data) every day at 00.01
+- [DONE] setup prod target in profile.yml
+- [DONE] create big query dataset in tf
+- [DONE] switch between deployment?
+- trigger dbt command from prefect.
+    - untuk jalanin command dbt seperti `dbt run` setiap setelah data ingestion
     https://prefecthq.github.io/prefect-dbt/
 
 - looker: https://lookerstudio.google.com/s/o-d0Q4Vu5wk
 - [DONE] manage nested data in bigquery
     - can dbt-bigquery access nested json and fulfill my metrics? CAN! in bigquery, nested is better than join. since it supports bigquery nested tools. https://medium.com/google-cloud/bigquery-explained-working-with-joins-nested-repeated-data-1941646ccb5b
-- setup prod target in profile.yml
 
 
 create reproducible environment

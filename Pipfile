@@ -12,6 +12,7 @@ prefect-gcp = {extras = ["cloud_storage"], version = "*"}
 gcsfs = "*"
 dbt-core = "*"
 dbt-bigquery = "*"
+dask = "*"
 
 [dev-packages]
 

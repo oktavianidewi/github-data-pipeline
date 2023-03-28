@@ -14,3 +14,7 @@ terraform -chdir=infra/sa output sa_private_key | base64 -di | jq > sa-project-b
 
 # copy sa file to ~
 cp sa-project-batch.json ~/.gc-keys
+
+# -t to switch between deployment
+dbt build --project-dir dbt_project_github/ -t prod
+dbt debug --project-dir dbt_project_github/ --profiles-dir .

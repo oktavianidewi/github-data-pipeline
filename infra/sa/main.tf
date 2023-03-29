@@ -83,15 +83,17 @@ resource "google_bigquery_dataset" "dataset" {
 }
 
 resource "google_bigquery_dataset" "dev_dataset" {
-  dataset_id = local.dev_bq_dataset
-  project    = local.project_id
-  location   = local.region
+  dataset_id                 = local.dev_bq_dataset
+  project                    = local.project_id
+  location                   = local.region
+  delete_contents_on_destroy = true
 }
 
 resource "google_bigquery_dataset" "prod_dataset" {
-  dataset_id = local.prod_bq_dataset
-  project    = local.project_id
-  location   = local.region
+  dataset_id                 = local.prod_bq_dataset
+  project                    = local.project_id
+  location                   = local.region
+  delete_contents_on_destroy = true
 }
 
 resource "google_bigquery_table" "table" {

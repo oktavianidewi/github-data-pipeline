@@ -34,3 +34,11 @@ prefect deployment build ingest.py:etl_web_to_gcs -n "github-pipeline-ingest" \
 
 prefect deployment build dbt_command.py:trigger_dbt_build -n "trigger-dbt-build" --apply
 prefect deployment run "trigger-dbt-build/trigger-dbt-build"
+
+prefect deployment build flow.py:greetings -n "greet" --apply
+prefect deployment run flow/greet
+
+# help of tmux to run prefect server and agent in background
+tmux new -d -s mySession
+tmux send-keys -t mySession.0 "echo 'Hello World'" ENTER
+tmux a -t mySession

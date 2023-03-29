@@ -6,6 +6,9 @@ from prefect_gcp.cloud_storage import GcsBucket
 from random import randint
 import json
 from dotenv import load_dotenv
+from calendar import monthrange
+from datetime import date
+
 
 @task(retries=3)
 def fetch_chunk_clean_write(dataset_url: str) -> None:
@@ -50,18 +53,30 @@ def write_gcs(path: Path) -> None:
     gcp_block.upload_from_path(from_path=path, to_path=path)
     return
 
+def gen_days(year: int, months: list, days: list) -> list: 
+    gen_days = []
+    if len(days) == 1 and days[0] == "current":
+        today = date.today()
+        cur_month = today.strftime("%-m")
+        cur_day = today.strftime("%d")
+
+        for month in months:
+            if int(month) == int(cur_month):
+                gen_days.append(int(cur_day)-1)
+            else:
+                gen_days.append(monthrange(year, month)[1])
+    return gen_days
 
 @flow()
 def etl_web_to_gcs(year: int, months: list, days: list) -> None:
     """The main ETL function"""
-    # TODO: every 10 min run job to ingest hourly data
+    custom_days = gen_days(year, months, days)
     for month in months:
-        print(f"months {month:02}")
-        for day in days:
+        for day in custom_days:
             print(f"days {day:02}")
             for hour in range (1, 24):
                 dataset_file = f"{year}-{month:02}-{day:02}-{hour}"
-                print(f"hour-{hour}-{dataset_file}")
+                print(f"hour:{hour}, file:{dataset_file}")
                 dataset_url = f"https://data.gharchive.org/{year}-{month:02}-{day:02}-{hour}.json.gz"
                 fetch_chunk_clean_write(dataset_url)
 
@@ -71,5 +86,5 @@ if __name__ == "__main__":
     # parameterized
     year = 2023
     months = [1] # 1, 2, 3
-    days = [4] # 01..31
+    days = ["current"] # 01..31
     etl_web_to_gcs(year, months, days)

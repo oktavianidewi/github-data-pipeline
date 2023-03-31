@@ -53,7 +53,6 @@ resource "google_project_iam_binding" "service_account" {
   ])
   role = each.key
   members = [
-    # "serviceAccount:${local.account_id}@${local.project_id}.iam.gserviceaccount.com",
     "serviceAccount:${google_service_account.service_account.email}",
   ]
 }

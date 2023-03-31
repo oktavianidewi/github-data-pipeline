@@ -11,11 +11,20 @@ initial-setup:
 	pipenv shell
 	pipenv install
 
-initial-setup-vm:
+install-terraform: 
 	wget -O- https://apt.releases.hashicorp.com/gpg | gpg --dearmor | sudo tee /usr/share/keyrings/hashicorp-archive-keyring.gpg
 	echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
 	sudo apt-get update -y
-	sudo apt install docker docker-compose python3-pip make terraform -y
+	sudo apt install terraform -y
+	
+install-docker-compose:
+	rmm -rf /usr/local/bin/docker-compose
+	curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+	chmod +x /usr/local/bin/docker-compose
+
+initial-setup-vm:
+	sudo apt-get update -y
+	sudo apt install docker docker-compose python3-pip make jq -y
 	sudo chmod 666 /var/run/docker.sock
 	pip install -r requirements.txt
 
@@ -27,7 +36,7 @@ infra-up:
 	terraform -chdir=./infra/sa apply
 
 generate-sa:
-	terraform -chdir=infra/sa output sa_private_key | base64 -di | jq > sa-project-batch.json
+	terraform -chdir=infra/vm output sa_private_key | base64 -di | jq > sa-project-batch.json
 
 infra-down:
 	terraform -chdir=infra/sa destroy

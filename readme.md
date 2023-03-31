@@ -54,6 +54,7 @@ create reproducible environment
 - modify prefect flow (deployment, run) with python code
 - create makefile and makesure everything works in VM with makefile
     - https://medium.com/@danilo.drobac/7-a-complete-google-cloud-deployment-of-prefect-2-0-32b8e3c2febe
+- sa harus bikin 2, 1 sa untuk create vm, 1 sa untuk operational dalam vm
 - setup dbt-bigquery in docker 
     - https://github.com/rocketechgroup/dbt-container-for-bigquery/blob/master/Dockerfile
     - https://www.dumky.net/posts/dbt-in-a-box-using-google-cloud-run-and-bigquery-to-run-your-dbt-sql-models-from-a-docker-container/

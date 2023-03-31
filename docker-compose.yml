@@ -53,18 +53,19 @@ services:
     profiles: [ "agent" ]
 
   ### Prefect CLI
-  cli:
+  historical-ingest:
     image: prefecthq/prefect:2.8.7-python3.11
-    entrypoint: "bash"
-    working_dir: "/root/flows"
+    entrypoint: [ "python3", "flows/prefect_deploy_ingest.py" ]
+    working_dir: "/flows"
     volumes:
-      - "./flows:/root/flows"
+      - "./flows:/flows"
     environment:
       - PREFECT_API_URL=http://server:4200/api
     #       Use PREFECT_API_KEY to use the CLI to interact with Prefect Cloud
     #     - PREFECT_API_KEY=YOUR_API_KEY
     profiles: [ "cli" ]
 
+# https://github.com/flavienbwk/prefect-docker-compose
 volumes:
   prefect:
   db:

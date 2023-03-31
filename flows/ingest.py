@@ -5,7 +5,6 @@ from prefect import flow, task
 from prefect_gcp.cloud_storage import GcsBucket
 from random import randint
 import json
-from dotenv import load_dotenv
 from calendar import monthrange
 from datetime import date
 
@@ -49,14 +48,6 @@ def write_to_gcs(df: pd.DataFrame, **kwargs) -> None:
     path = kwargs["GCS_PATH"] # f"gs://tf_datalake_bucket_dtc-de-zoomcamp-2023-376219/data"
     df.to_parquet(path, engine="pyarrow", compression="gzip", partition_cols=["year", "month", "day"])
 
-
-@task()
-def write_gcs(path: Path) -> None:
-    """Upload local parquet file to GCS"""
-    gcp_block = GcsBucket.load(os.getenv("PREFECT_GCS_BUCKET_BLOCK")) # "project-batch"
-    gcp_block.upload_from_path(from_path=path, to_path=path)
-    return
-
 def gen_days(year: int, months: list, days: list) -> list: 
     gen_days = []
     if len(days) == 1 and days[0] == "current":
@@ -85,8 +76,6 @@ def etl_web_to_gcs(year: int, months: list, days: list, **kwargs) -> None:
                 fetch_chunk_clean_write(dataset_url, **kwargs)
 
 if __name__ == "__main__":
-    load_dotenv()
-    
     # parameterized
     year = 2023
     months = [1] # 1, 2, 3

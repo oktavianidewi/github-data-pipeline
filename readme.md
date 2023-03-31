@@ -51,6 +51,7 @@ create reproducible environment
 - dockerize prefect in VM
 - [DONE] port forward from VM to docker port, so orion UI ca be accessed via browser
     https://stackoverflow.com/questions/52265028/mapping-ports-in-compute-engine-with-docker
+- modify prefect flow (deployment, run) with python code
 - create makefile and makesure everything works in VM with makefile
     - https://medium.com/@danilo.drobac/7-a-complete-google-cloud-deployment-of-prefect-2-0-32b8e3c2febe
 - setup dbt-bigquery in docker 

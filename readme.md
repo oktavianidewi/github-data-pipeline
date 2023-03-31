@@ -46,17 +46,18 @@ https://github.com/terraform-google-modules/terraform-google-bigquery/blob/maste
 
 
 create reproducible environment
-- [PROGRESS] create makefile and makesure everything works in local with makefile
-    - [TODO] prefect flow can not load data from .env
-- create makefile and makesure everything works in VM with makefile
+- [DONE] create makefile and makesure everything works in local with makefile
+    - [DONE] prefect flow can not load data from .env
 - dockerize prefect in VM
-    - https://medium.com/@danilo.drobac/7-a-complete-google-cloud-deployment-of-prefect-2-0-32b8e3c2febe
-- port forward from VM to docker port, so orion UI ca be accessed via browser
+- [DONE] port forward from VM to docker port, so orion UI ca be accessed via browser
     https://stackoverflow.com/questions/52265028/mapping-ports-in-compute-engine-with-docker
+- create makefile and makesure everything works in VM with makefile
+    - https://medium.com/@danilo.drobac/7-a-complete-google-cloud-deployment-of-prefect-2-0-32b8e3c2febe
 - setup dbt-bigquery in docker 
     - https://github.com/rocketechgroup/dbt-container-for-bigquery/blob/master/Dockerfile
     - https://www.dumky.net/posts/dbt-in-a-box-using-google-cloud-run-and-bigquery-to-run-your-dbt-sql-models-from-a-docker-container/
     - https://blog.devops.dev/end-to-end-dbt-project-in-google-cloud-platform-part-2-d779ce8cc3d7
+    https://blog.devgenius.io/how-to-build-prefect-for-work-orchestration-1d824bd7893f
 - looker 
 
 once I clone the repository, 
@@ -67,9 +68,14 @@ sudo chmod 666 /var/run/docker.sock
 
 screen cheatsheet
 ```
-screen -S session_name
-detach: ctrl+a d
+tmux new -d -s prefect-server
+tmux send-keys -t prefect-server 'docker-compose --profile server up' ENTER
 
+tmux new -d -s prefect-agent
+tmux send-keys -t prefect-agent 'docker-compose --profile agent up' ENTER
+
+tmux a -t prefect-server
+tmux a -t prefect-agent
 ```
 
 install first time perlu pakai makefile

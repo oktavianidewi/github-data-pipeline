@@ -1,9 +1,16 @@
 data/*
 infra/dwh/.terraform
+
 infra/sa/.terraform
 infra/sa/terraform.tfstate
 infra/sa/terraform.tfstate.backup
 infra/sa/.terraform.lock.hcl
+
 infra/vm/.terraform
+infra/vm/terraform.tfstate
+infra/vm/terraform.tfstate.backup
+infra/vm/.terraform.lock.hcl
+infra/vm/.ssh
+
 sa-project-batch.json
 *-deployment.yaml

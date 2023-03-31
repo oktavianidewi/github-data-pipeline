@@ -18,3 +18,12 @@ def trigger_dbt_build(target: str) -> str:
         profiles_dir="."
     ).run()
     return result
+
+@flow
+def trigger_dbt_incremental_run(target: str) -> str:
+    result = DbtCoreOperation(
+        commands=["dbt run --target {target}"],
+        project_dir="dbt_project_github",
+        profiles_dir="."
+    ).run()
+    return result

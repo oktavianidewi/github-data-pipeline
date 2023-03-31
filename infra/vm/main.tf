@@ -42,16 +42,16 @@ resource "google_compute_firewall" "allow_ssh" {
 
   allow {
     protocol = "tcp"
-    ports    = ["22"]
+    ports    = ["22", "4200"]
   }
 }
 
 data "google_client_openid_userinfo" "me" {}
 
 resource "google_compute_instance" "dezoomcamp_vm" {
-  name         = "dezoomcamp"
+  name         = "dezoomcamp-1"
   machine_type = "e2-standard-4"
-  tags         = ["allow-ssh"] // this receives the firewall rule
+  tags         = ["allow-ssh", "http-server", "https-server"] // this receives the firewall rule
 
   metadata = {
     ssh-keys = "${split("@", data.google_client_openid_userinfo.me.email)[0]}:${tls_private_key.ssh.public_key_openssh}"

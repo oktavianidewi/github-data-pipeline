@@ -10,19 +10,23 @@ from calendar import monthrange
 from datetime import date
 
 
-@task(retries=3)
-def fetch_chunk_clean_write(dataset_url: str) -> None:
+@task(retries=3, log_prints=True)
+def fetch_chunk_clean_write(dataset_url: str, **kwargs) -> None:
     """Read taxi data from web into pandas DataFrame"""
+    
+    for key, value in kwargs.items():
+        print("%s == %s" % (key, value))
+    
     header = {'User-Agent': 'pandas'}
 
-    chunk_size = int(os.getenv("CHUNK_SIZE"))
+    chunk_size = int(kwargs["CHUNK_SIZE"])
     with pd.read_json(dataset_url, lines=True, storage_options=header, chunksize=chunk_size, compression="gzip") as reader: 
         reader
         for chunk in reader:
             # df = df.append(chunk, ignore_index=True)
             df = pd.DataFrame(chunk)
             df_clean = clean(df)
-            write_to_gcs(df_clean)
+            write_to_gcs(df_clean, **kwargs)
 
 def clean(df: pd.DataFrame) -> pd.DataFrame:
     """Fix dtype issues"""
@@ -40,9 +44,9 @@ def clean(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
-def write_to_gcs(df: pd.DataFrame) -> None:
+def write_to_gcs(df: pd.DataFrame, **kwargs) -> None:
     """Write DataFrame out locally as parquet file"""
-    path = os.getenv("GCS_PATH") # f"gs://tf_datalake_bucket_dtc-de-zoomcamp-2023-376219/data"
+    path = kwargs["GCS_PATH"] # f"gs://tf_datalake_bucket_dtc-de-zoomcamp-2023-376219/data"
     df.to_parquet(path, engine="pyarrow", compression="gzip", partition_cols=["year", "month", "day"])
 
 
@@ -67,8 +71,8 @@ def gen_days(year: int, months: list, days: list) -> list:
                 gen_days.append(monthrange(year, month)[1])
     return gen_days
 
-@flow()
-def etl_web_to_gcs(year: int, months: list, days: list) -> None:
+@flow(log_prints=True)
+def etl_web_to_gcs(year: int, months: list, days: list, **kwargs) -> None:
     """The main ETL function"""
     custom_days = gen_days(year, months, days)
     for month in months:
@@ -78,7 +82,7 @@ def etl_web_to_gcs(year: int, months: list, days: list) -> None:
                 dataset_file = f"{year}-{month:02}-{day:02}-{hour}"
                 print(f"hour:{hour}, file:{dataset_file}")
                 dataset_url = f"https://data.gharchive.org/{year}-{month:02}-{day:02}-{hour}.json.gz"
-                fetch_chunk_clean_write(dataset_url)
+                fetch_chunk_clean_write(dataset_url, **kwargs)
 
 if __name__ == "__main__":
     load_dotenv()
@@ -87,4 +91,5 @@ if __name__ == "__main__":
     year = 2023
     months = [1] # 1, 2, 3
     days = ["current"] # 01..31
+
     etl_web_to_gcs(year, months, days)

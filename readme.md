@@ -63,6 +63,8 @@ create reproducible environment
 
 once I clone the repository, 
 ```
+gcloud auth login --no-launch-browser
+
 sudo snap install docker
 sudo chmod 666 /var/run/docker.sock
 ```

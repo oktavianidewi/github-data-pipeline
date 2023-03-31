@@ -5,11 +5,19 @@ include flows/.env
 # initial setup will install docker, python, pipenv and all required libraries required as in Pipfile
 initial-setup: 
 	sudo apt-get update
-	sudo apt install docker docker-compose python3-pip -y
+	sudo apt install docker docker-compose python3-pip make -y
 	sudo chmod 666 /var/run/docker.sock
 	python3 -m pip install --user pipenv
 	pipenv shell
 	pipenv install
+
+initial-setup-vm:
+	sudo apt-get install wget curl unzip software-properties-common gnupg2 -y
+	sudo apt-add-repository "deb [arch=$(dpkg --print-architecture)] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
+	sudo apt-get update -y
+	sudo apt install docker docker-compose python3-pip make terraform -y
+	sudo chmod 666 /var/run/docker.sock
+	pip install -r requirements.txt
 
 # Set up cloud infrastructure
 infra-init:

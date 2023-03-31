@@ -12,8 +12,8 @@ initial-setup:
 	pipenv install
 
 initial-setup-vm:
-	sudo apt-get install wget curl unzip software-properties-common gnupg2 -y
-	sudo apt-add-repository "deb [arch=$(dpkg --print-architecture)] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
+	wget -O- https://apt.releases.hashicorp.com/gpg | gpg --dearmor | sudo tee /usr/share/keyrings/hashicorp-archive-keyring.gpg
+	echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
 	sudo apt-get update -y
 	sudo apt install docker docker-compose python3-pip make terraform -y
 	sudo chmod 666 /var/run/docker.sock

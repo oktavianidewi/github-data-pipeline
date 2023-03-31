@@ -17,6 +17,49 @@ provider "google" {
   zone    = "asia-southeast1-b"
 }
 
+locals {
+  project_id = "dtc-de-zoomcamp-2023-376219"
+  account_id = "sa-via-tf"
+  region     = "asia-southeast1"
+  zone       = "asia-southeast1-b"
+
+  storage_class    = "STANDARD"
+  data_lake_bucket = "tf_datalake_bucket"
+  dev_bq_dataset   = "dev_github"
+  prod_bq_dataset  = "prod_github"
+  bq_dataset       = "tf_dataset_bq"
+  table_id         = "tf_table_github"
+}
+
+resource "google_service_account" "service_account" {
+  account_id   = local.account_id
+  display_name = "Create sa via terraform"
+}
+
+resource "google_service_account_key" "service_account_key" {
+  service_account_id = google_service_account.service_account.name
+  public_key_type    = "TYPE_X509_PEM_FILE"
+}
+
+resource "google_project_iam_binding" "service_account" {
+  project = local.project_id
+
+  for_each = toset([
+    "roles/storage.admin",
+    "roles/bigquery.admin",
+    "roles/cloudsql.admin",
+    "roles/secretmanager.secretAccessor",
+    "roles/datastore.owner"
+  ])
+  role = each.key
+  members = [
+    # "serviceAccount:${local.account_id}@${local.project_id}.iam.gserviceaccount.com",
+    "serviceAccount:${google_service_account.service_account.email}",
+  ]
+}
+
+
+
 resource "google_project_service" "cloud_resource_manager" {
   service            = "cloudresourcemanager.googleapis.com"
   disable_on_destroy = false
@@ -49,12 +92,18 @@ resource "google_compute_firewall" "allow_ssh" {
 data "google_client_openid_userinfo" "me" {}
 
 resource "google_compute_instance" "dezoomcamp_vm" {
-  name         = "dezoomcamp-1"
-  machine_type = "e2-standard-4"
-  tags         = ["allow-ssh", "http-server", "https-server"] // this receives the firewall rule
+  name                      = "dezoomcamp-2"
+  machine_type              = "e2-standard-4"
+  tags                      = ["allow-ssh", "http-server", "https-server"] // this receives the firewall rule
+  allow_stopping_for_update = true
 
   metadata = {
     ssh-keys = "${split("@", data.google_client_openid_userinfo.me.email)[0]}:${tls_private_key.ssh.public_key_openssh}"
+  }
+
+  service_account {
+    scopes = ["cloud-platform"]
+    email  = google_service_account.service_account.email
   }
 
   boot_disk {

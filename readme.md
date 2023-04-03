@@ -48,10 +48,13 @@ https://github.com/terraform-google-modules/terraform-google-bigquery/blob/maste
 create reproducible environment
 - [DONE] create makefile and makesure everything works in local with makefile
     - [DONE] prefect flow can not load data from .env
-- dockerize prefect in VM
+- [DONE] dockerize prefect in VM
+    - https://github.com/PrefectHQ/prefect/issues/5648#issuecomment-1217944604
 - [DONE] port forward from VM to docker port, so orion UI ca be accessed via browser
     https://stackoverflow.com/questions/52265028/mapping-ports-in-compute-engine-with-docker
-- modify prefect flow (deployment, run) with python code
+- [DONE] modify prefect flow (deployment, run) with python code
+- [PROGRESS] docker-compose run --python file (gak perlu masuk ke bash) for scheduler and historical data
+
 - create makefile and makesure everything works in VM with makefile
     - https://medium.com/@danilo.drobac/7-a-complete-google-cloud-deployment-of-prefect-2-0-32b8e3c2febe
 - sa harus bikin 2, 1 sa untuk create vm, 1 sa untuk operational dalam vm

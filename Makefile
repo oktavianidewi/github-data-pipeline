@@ -46,23 +46,60 @@ infra-down:
 prefect-start: 
 	chmod +x prefect.sh && ./prefect.sh
 
-docker-prefect-start: 
-	chmod +x prefect-docker.sh && ./prefect-docker.sh
+docker-spin-up:
+	chmod +x build.sh && ./build.sh
+	docker-compose up -d server
+	docker-compose up -d agent
+
+docker-spin-down:
+	docker-compose down --remove-orphans
 
 # Create block and ingest data
-create-block:
-	source flows/.env
-	python3 flows/prefect_make_gcp_blocks.py
+block-create:
+	docker-compose run job flows/gcp_blocks.py
 
-ingest-start:
+ingest-data:
+	docker-compose run job flows/deploy_ingest.py \
+		--name "github-data" \
+		--params='{"year": 2023, "months":[4], "days":["current"], "kwargs" : {"CHUNK_SIZE":${CHUNK_SIZE}, "GCP_PROJECT_ID":${GCP_PROJECT_ID}, "GCS_BUCKET_ID":${GCS_BUCKET_ID}, "GCS_PATH":${GCS_PATH} } }'
+
+set-daily-ingest-data:
+	docker-compose run job flows/deploy_ingest.py \
+		--name "github-data" \
+		--params='{"year": $(shell date +'%Y'), "months":[$(shell date +'%-m')], "days":["current"], "kwargs" : {"CHUNK_SIZE":${CHUNK_SIZE}, "GCP_PROJECT_ID":${GCP_PROJECT_ID}, "GCS_BUCKET_ID":${GCS_BUCKET_ID}, "GCS_PATH":${GCS_PATH} } }' \
+		--cron "1 0 * * *"
+
+transform-data-dev:
+	docker-compose run job flows/deploy_dbt_command.py \
+		--target dev \
+		--type run
+
+transform-data-prod:
+	docker-compose run job flows/deploy_dbt_command.py \
+		--target prod \
+		--type run
+
+set-daily-transform-data-prod:
+	docker-compose run job flows/deploy_dbt_command.py \
+		--target prod \
+		--type run \
+		--cron '1 0 * * *'
+
+
+
+
+
+
+
+
+
+local-ingest-start:
 	source flows/.env
 	prefect deployment build flows/ingest.py:etl_web_to_gcs -n "ingestion" \
 		--params='{"year": 2023, "months":[1], "days":["current"], "kwargs" : {"CHUNK_SIZE":${CHUNK_SIZE}, "GCP_PROJECT_ID":${GCP_PROJECT_ID}, "GCS_BUCKET_ID":${GCS_BUCKET_ID}, "GCS_PATH":${GCS_PATH} } }' \
 		--apply
 	prefect deployment run "etl-web-to-gcs/ingestion"
 
-docker-historical-ingest-start:
-	docker-compose --profile historical-ingest up
 
 dbt-model-initial-run-dev:
 	prefect deployment build flows/prefect_dbt_command.py:trigger_dbt_build -n "initial-dev" \

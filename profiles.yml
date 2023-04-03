@@ -5,7 +5,7 @@ dbt_project_github:
       dataset: dev_github
       job_execution_timeout_seconds: 300
       job_retries: 1
-      keyfile: /mnt/d/personal-github/github-data-pipeline/keys/sa-project.json
+      keyfile: sa-project-batch.json
       location: asia-southeast1
       method: service-account
       priority: interactive
@@ -16,7 +16,7 @@ dbt_project_github:
       dataset: prod_github
       job_execution_timeout_seconds: 300
       job_retries: 1
-      keyfile: /mnt/d/personal-github/github-data-pipeline/keys/sa-project.json
+      keyfile: sa-project-batch.json
       location: asia-southeast1
       method: service-account
       priority: interactive

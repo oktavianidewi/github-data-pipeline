@@ -60,7 +60,7 @@ block-create:
 
 ingest-data:
 	docker-compose run job flows/deploy_ingest.py \
-		--name "github-data" \
+		--name "github-data-2" \
 		--params='{"year": 2023, "months":[4], "days":["current"], "kwargs" : {"CHUNK_SIZE":${CHUNK_SIZE}, "GCP_PROJECT_ID":${GCP_PROJECT_ID}, "GCS_BUCKET_ID":${GCS_BUCKET_ID}, "GCS_PATH":${GCS_PATH} } }'
 
 set-daily-ingest-data:

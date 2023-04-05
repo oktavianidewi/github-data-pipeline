@@ -2,14 +2,11 @@ SHELL := /bin/bash
 
 include .env
 
-# initial setup will install docker, python, pipenv and all required libraries required as in Pipfile
+# initial setup will install docker, python, and all required libraries required as in Pipfile
 initial-setup: 
 	sudo apt-get update
 	sudo apt install docker docker-compose python3-pip make -y
 	sudo chmod 666 /var/run/docker.sock
-	python3 -m pip install --user pipenv
-	pipenv shell
-	pipenv install
 
 install-terraform: 
 	wget -O- https://apt.releases.hashicorp.com/gpg | gpg --dearmor | sudo tee /usr/share/keyrings/hashicorp-archive-keyring.gpg && \

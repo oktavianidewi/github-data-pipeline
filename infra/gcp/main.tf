@@ -49,6 +49,6 @@ resource "tls_private_key" "ssh" {
 }
 resource "local_file" "ssh_private_key_pem" {
   content         = tls_private_key.ssh.private_key_pem
-  filename        = ".ssh/github-pipeline-project"
+  filename        = "../../ssh/github-pipeline-project"
   file_permission = "0600"
 }

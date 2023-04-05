@@ -1,6 +1,7 @@
 # enable API
 resource "google_project_service" "cloud_resource_manager" {
-  project                    = local.project_id
+  # project                    = local.project_id
+  project                    = var.project_id
   service                    = "cloudresourcemanager.googleapis.com"
   disable_on_destroy         = true
   disable_dependent_services = true
@@ -8,7 +9,8 @@ resource "google_project_service" "cloud_resource_manager" {
 
 # enable GCE API
 resource "google_project_service" "compute" {
-  project                    = local.project_id
+  # project                    = local.project_id
+  project                    = var.project_id
   service                    = "compute.googleapis.com"
   disable_on_destroy         = true
   disable_dependent_services = true
@@ -16,20 +18,26 @@ resource "google_project_service" "compute" {
 
 # setup VPC
 resource "google_compute_network" "vpc_network" {
-  project = local.project_id
-  name    = local.vpc_network_name
+  # project = local.project_id
+  # name    = local.vpc_network_name
+  project = var.project_id
+  name    = var.vpc_network_name
 }
 
 # setup external static IP
 resource "google_compute_address" "static_ip" {
-  project = local.project_id
-  name    = local.gce_static_ip_name
-  region  = local.region
+  # project = local.project_id
+  # name    = local.gce_static_ip_name
+  # region  = local.region
+  project = var.project_id
+  name    = var.gce_static_ip_name
+  region  = var.region
 }
 
 # setup allowed ports
 resource "google_compute_firewall" "allow_ssh" {
-  project       = local.project_id
+  # project       = local.project_id
+  project       = var.project_id
   name          = "allow-ssh"
   network       = google_compute_network.vpc_network.name
   target_tags   = ["allow-ssh"]
@@ -45,9 +53,12 @@ data "google_client_openid_userinfo" "me" {}
 
 # setup GCE
 resource "google_compute_instance" "default" {
-  project                   = local.project_id
-  zone                      = local.zone
-  name                      = local.gce_name
+  # project                   = local.project_id
+  # zone                      = local.zone
+  # name                      = local.gce_name
+  project                   = var.project_id
+  zone                      = var.zone
+  name                      = var.gce_name
   machine_type              = "e2-standard-4"
   tags                      = ["allow-ssh", "http-server", "https-server"]
   allow_stopping_for_update = true

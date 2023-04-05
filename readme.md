@@ -81,10 +81,27 @@ events:
 ## Dashboard Preview
 
 ## Reproducability
-1. Create new GCP project
-2. change project name in infra/gcp/variables.tf
-3. run this command to create new VM and generate service-account
-4. set external IP address in .env file
+1. Open [google cloud console](https://console.cloud.google.com/) and create a new GCP project.
+
+{{2 GAMBAR create GCP Project}}
+
+2. Change `project_id`, `region` and `zone` variables in (infra/gcp/terraform.tfvars)[link] as per your setting.
+
+3. Install make tools
+
+4. Run this command to create new VM and generate service-account with terraform
+
+```
+make xxx
+```
+
+5. Open Google Cloud Engine, copy IP ssh to home directory.
+
+6. Insert to GCE using SSH
+
+7. Clone repository, install make, install initial setup using make
+
+8. Run make command 
 
 
 ## Improvements

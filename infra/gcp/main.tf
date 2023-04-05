@@ -12,14 +12,20 @@ terraform {
 }
 
 provider "google" {
-  project = local.project_id
-  region  = local.region
-  zone    = local.zone
+  # project = local.project_id
+  # region  = local.region
+  # zone    = local.zone
+
+  project = var.project_id
+  region  = var.region
+  zone    = var.zone
 }
 
 resource "google_service_account" "service_account" {
-  project      = local.project_id
-  account_id   = local.account_id
+  # project      = local.project_id
+  # account_id   = local.account_id
+  project      = var.project_id
+  account_id   = var.account_id
   display_name = "Create service-account via terraform"
 }
 

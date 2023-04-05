@@ -33,6 +33,9 @@ infra-down:
 	terraform -chdir=infra/sa destroy
 	rm -rf sa-project-batch.json
 
+copy-sa-to-vm:
+	gcloud compute scp --project="pacific-decoder-382709" --zone="asia-southeast1-b" sa-github-pipeline-project.json learndewi@vm-github-pipeline:"~/github-data-pipeline"
+	
 # Set up prefect server and agent
 prefect-start: 
 	chmod +x prefect.sh && ./prefect.sh

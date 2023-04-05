@@ -78,9 +78,9 @@ resource "google_compute_address" "static_ip" {
 }
 
 resource "google_compute_firewall" "allow_ssh" {
-  name          = "allow-ssh"
+  name          = "allow-ssh-tcp"
   network       = google_compute_network.vpc_network.name
-  target_tags   = ["allow-ssh"] // this targets our tagged VM
+  target_tags   = ["allow-ssh-tcp"] // this targets our tagged VM
   source_ranges = ["0.0.0.0/0"]
 
   allow {
@@ -94,7 +94,7 @@ data "google_client_openid_userinfo" "me" {}
 resource "google_compute_instance" "default" {
   name                      = "github-pipeline-vm"
   machine_type              = "e2-standard-4"
-  tags                      = ["allow-ssh", "http-server", "https-server"] // this receives the firewall rule
+  tags                      = ["allow-ssh-tcp", "http-server", "https-server"] // this receives the firewall rule
   allow_stopping_for_update = true
 
   metadata = {
@@ -123,14 +123,14 @@ resource "google_compute_instance" "default" {
 }
 
 # ssh
-# provider "tls" {}
-# resource "tls_private_key" "ssh" {
-#   algorithm = "RSA"
-#   rsa_bits  = 4096
-# }
+provider "tls" {}
+resource "tls_private_key" "ssh" {
+  algorithm = "RSA"
+  rsa_bits  = 4096
+}
 
-# resource "local_file" "ssh_private_key_pem" {
-#   content         = tls_private_key.ssh.private_key_pem
-#   filename        = ".ssh/de_zoomcamp_project_dewi"
-#   file_permission = "0600"
-# }
+resource "local_file" "ssh_private_key_pem" {
+  content         = tls_private_key.ssh.private_key_pem
+  filename        = ".ssh/de_zoomcamp_project_dewi"
+  file_permission = "0600"
+}

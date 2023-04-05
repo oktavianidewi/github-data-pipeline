@@ -28,11 +28,11 @@ resource "google_compute_address" "static_ip" {
 }
 
 # setup allowed ports
-resource "google_compute_firewall" "allow_tcp_ports" {
+resource "google_compute_firewall" "allow_ssh" {
   project       = local.project_id
-  name          = "allow-tcp-ports"
+  name          = "allow-ssh"
   network       = google_compute_network.vpc_network.name
-  target_tags   = ["allow-tcp-ports"]
+  target_tags   = ["allow-ssh"]
   source_ranges = ["0.0.0.0/0"]
 
   allow {
@@ -49,7 +49,7 @@ resource "google_compute_instance" "default" {
   zone                      = local.zone
   name                      = local.gce_name
   machine_type              = "e2-standard-4"
-  tags                      = ["allow-tcp-ports", "http-server", "https-server"]
+  tags                      = ["allow-ssh", "http-server", "https-server"]
   allow_stopping_for_update = true
 
   metadata = {

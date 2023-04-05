@@ -6,9 +6,9 @@ services:
     image: postgres:15.2-alpine
     restart: always
     environment:
-      - POSTGRES_USER=${POSTGRES_USER}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER:-postgres}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-postgres}
+      - POSTGRES_DB=${POSTGRES_DB:-prefect}
     expose:
       - 5432
     volumes:
@@ -20,15 +20,24 @@ services:
     restart: always
     volumes:
       - prefect:/root/.prefect
-      - .:/root/github-data-pipeline
-    entrypoint: [ "prefect", "orion", "start", "--host", "0.0.0.0" ]
+      - .:${PREFECT_LOCAL_STORAGE_PATH:-/root/github-data-pipeline}
+    entrypoint:
+      [
+        "prefect",
+        "server",
+        "start",
+        "--host",
+        "0.0.0.0",
+        "--port",
+        "4200"
+      ]
     environment:
-      - PREFECT_ORION_API_HOST=${PREFECT_ORION_API_HOST}
-      - PREFECT_ORION_API_PORT=${PREFECT_ORION_API_PORT}
-      - PREFECT_API_URL=${PREFECT_API_URL}
-      - PREFECT_ORION_UI_API_URL=${PREFECT_ORION_UI_API_URL}
-      - PREFECT_API_DATABASE_CONNECTION_URL=${PREFECT_API_DATABASE_CONNECTION_URL}
-      - PREFECT_LOCAL_STORAGE_PATH=${PREFECT_LOCAL_STORAGE_PATH}
+      - PREFECT_ORION_API_HOST=${PREFECT_ORION_API_HOST:-127.0.0.1}
+      - PREFECT_ORION_API_PORT=${PREFECT_ORION_API_PORT:-4200}
+      - PREFECT_API_URL=${PREFECT_API_URL:-http://127.0.0.1:4200/api}
+      - PREFECT_ORION_UI_API_URL=${PREFECT_ORION_UI_API_URL:-http://127.0.0.1:4200/api}
+      - PREFECT_API_DATABASE_CONNECTION_URL=${PREFECT_API_DATABASE_CONNECTION_URL:-postgresql+asyncpg://postgres:postgres@database:5432/prefect}
+      - PREFECT_LOCAL_STORAGE_PATH=${PREFECT_LOCAL_STORAGE_PATH:-/root/github-data-pipeline}
     ports:
       - 4200:4200
     depends_on:
@@ -39,22 +48,22 @@ services:
     image: python_prefect_dbt
     restart: always
     volumes:
-      - .:/root/github-data-pipeline
+      - .:${PREFECT_LOCAL_STORAGE_PATH:-/root/github-data-pipeline}
     entrypoint: [ "prefect", "agent", "start", "-q", "default" ]
     environment:
       - PREFECT_API_URL=http://server:4200/api
-      - PREFECT_LOCAL_STORAGE_PATH=${PREFECT_LOCAL_STORAGE_PATH}
+      - PREFECT_LOCAL_STORAGE_PATH=${PREFECT_LOCAL_STORAGE_PATH:-/root/github-data-pipeline}
 
   # job
   job:
     image: python_prefect_dbt
     entrypoint: [ "python3" ]
-    working_dir: ${PREFECT_LOCAL_STORAGE_PATH}
+    working_dir: ${PREFECT_LOCAL_STORAGE_PATH:-/root/github-data-pipeline}
     volumes:
-      - .:${PREFECT_LOCAL_STORAGE_PATH}
+      - .:${PREFECT_LOCAL_STORAGE_PATH:-/root/github-data-pipeline}
     environment:
       - PREFECT_API_URL=http://server:4200/api
-      - PREFECT_LOCAL_STORAGE_PATH=${PREFECT_LOCAL_STORAGE_PATH}
+      - PREFECT_LOCAL_STORAGE_PATH=${PREFECT_LOCAL_STORAGE_PATH:-/root/github-data-pipeline}
 volumes:
   prefect:
   db_postgres:

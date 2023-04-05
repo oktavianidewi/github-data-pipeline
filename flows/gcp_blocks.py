@@ -7,6 +7,9 @@ import os
 # insert your own service_account_file path or service_account_info dictionary from the json file
 # IMPORTANT - do not store credentials in a publicly available repository!
 
+basedir=os.path.abspath(os.path.dirname(__file__))
+load_dotenv(os.path.join(basedir, '../.env'))
+
 load_dotenv("../.env")
 # create gcp credentials block
 credentials_block = GcpCredentials(

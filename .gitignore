@@ -12,5 +12,11 @@ infra/vm/terraform.tfstate.backup
 infra/vm/.terraform.lock.hcl
 infra/vm/.ssh
 
+infra/gcp/.terraform
+infra/gcp/terraform.tfstate
+infra/gcp/terraform.tfstate.backup
+infra/gcp/.terraform.lock.hcl
+infra/gcp/.ssh
+
 sa-project-batch.json
 *-deployment.yaml

@@ -8,7 +8,7 @@ from prefect.server.schemas.schedules import CronSchedule
 
 
 
-load_dotenv()
+load_dotenv("../.env")
 
 CHUNK_SIZE = int(os.getenv("CHUNK_SIZE"))
 GCP_PROJECT_ID = os.getenv("GCP_PROJECT_ID")

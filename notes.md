@@ -56,6 +56,18 @@ create reproducible environment
 - [DONE] docker-compose run --python file (gak perlu masuk ke bash) for scheduler and historical data
 - [PROGRESS] create makefile and makesure everything works in VM with makefile
     - https://medium.com/@danilo.drobac/7-a-complete-google-cloud-deployment-of-prefect-2-0-32b8e3c2febe
+- [DONE] create static external IP address for VM, user should add IP manually to .env
+
+terraform flow: 
+1. [DONE] create VM and its default SA
+2. [DONE] download SA json keyfile
+3. [DONE] create resource in GCP
+    - project
+    - gcs
+    - bigquery
+4. [DONE] separate all resources in file
+
+
 
 error: 
 ```

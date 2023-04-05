@@ -81,6 +81,11 @@ events:
 ## Dashboard Preview
 
 ## Reproducability
+1. Create new GCP project
+2. change project name in infra/gcp/variables.tf
+3. run this command to create new VM and generate service-account
+4. set external IP address in .env file
+
 
 ## Improvements
 

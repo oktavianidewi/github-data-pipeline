@@ -1,6 +1,6 @@
 SHELL := /bin/bash
 
-include flows/.env
+include .env
 
 # initial setup will install docker, python, pipenv and all required libraries required as in Pipfile
 initial-setup: 
@@ -12,21 +12,15 @@ initial-setup:
 	pipenv install
 
 install-terraform: 
-	wget -O- https://apt.releases.hashicorp.com/gpg | gpg --dearmor | sudo tee /usr/share/keyrings/hashicorp-archive-keyring.gpg
-	echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
-	sudo apt-get update -y
+	wget -O- https://apt.releases.hashicorp.com/gpg | gpg --dearmor | sudo tee /usr/share/keyrings/hashicorp-archive-keyring.gpg && \
+	echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list && \
+	sudo apt-get update -y && \
 	sudo apt install terraform -y
 	
-install-docker-compose:
-	rm -rf /usr/local/bin/docker-compose
-	sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-	sudo chmod +x /usr/local/bin/docker-compose
-
 initial-setup-vm:
 	sudo apt-get update -y
 	sudo apt install docker docker-compose python3-pip make jq -y
 	sudo chmod 666 /var/run/docker.sock
-	pip install -r requirements.txt
 
 # Set up cloud infrastructure
 infra-init:
@@ -37,6 +31,9 @@ infra-up:
 
 generate-sa:
 	terraform -chdir=infra/vm output sa_private_key | base64 -di | jq > sa-project-batch.json
+
+generate-sa-vm:
+	terraform -chdir=infra/gcp output sa_private_key | base64 -di | jq > sa-github-pipeline-project.json
 
 infra-down:
 	terraform -chdir=infra/sa destroy
@@ -94,7 +91,7 @@ set-daily-transform-data-prod:
 
 
 local-ingest-start:
-	source flows/.env
+	source .env
 	prefect deployment build flows/ingest.py:etl_web_to_gcs -n "ingestion" \
 		--params='{"year": 2023, "months":[1], "days":["current"], "kwargs" : {"CHUNK_SIZE":${CHUNK_SIZE}, "GCP_PROJECT_ID":${GCP_PROJECT_ID}, "GCS_BUCKET_ID":${GCS_BUCKET_ID}, "GCS_PATH":${GCS_PATH} } }' \
 		--apply

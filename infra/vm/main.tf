@@ -19,7 +19,7 @@ provider "google" {
 
 locals {
   project_id = "dtc-de-zoomcamp-2023-376219"
-  account_id = "sa-via-tf"
+  account_id = "sa-via-tf-x3"
   region     = "asia-southeast1"
   zone       = "asia-southeast1-b"
 
@@ -70,10 +70,11 @@ resource "google_project_service" "compute" {
 }
 
 resource "google_compute_network" "vpc_network" {
-  name = "my-network"
+  name = "github-pipeline-network"
 }
 resource "google_compute_address" "static_ip" {
-  name = "dezoomcamp-vm"
+  name   = "github-pipeline-vm"
+  region = local.region
 }
 
 resource "google_compute_firewall" "allow_ssh" {
@@ -90,8 +91,8 @@ resource "google_compute_firewall" "allow_ssh" {
 
 data "google_client_openid_userinfo" "me" {}
 
-resource "google_compute_instance" "dezoomcamp_vm" {
-  name                      = "dezoomcamp-2"
+resource "google_compute_instance" "default" {
+  name                      = "github-pipeline-vm"
   machine_type              = "e2-standard-4"
   tags                      = ["allow-ssh", "http-server", "https-server"] // this receives the firewall rule
   allow_stopping_for_update = true
@@ -122,14 +123,14 @@ resource "google_compute_instance" "dezoomcamp_vm" {
 }
 
 # ssh
-provider "tls" {}
-resource "tls_private_key" "ssh" {
-  algorithm = "RSA"
-  rsa_bits  = 4096
-}
+# provider "tls" {}
+# resource "tls_private_key" "ssh" {
+#   algorithm = "RSA"
+#   rsa_bits  = 4096
+# }
 
-resource "local_file" "ssh_private_key_pem" {
-  content         = tls_private_key.ssh.private_key_pem
-  filename        = ".ssh/de_zoomcamp_project_dewi"
-  file_permission = "0600"
-}
+# resource "local_file" "ssh_private_key_pem" {
+#   content         = tls_private_key.ssh.private_key_pem
+#   filename        = ".ssh/de_zoomcamp_project_dewi"
+#   file_permission = "0600"
+# }

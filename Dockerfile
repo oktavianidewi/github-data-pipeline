@@ -8,9 +8,9 @@ RUN apt-get update && \
     apt-get update -y && \
     apt-get install google-cloud-sdk -y
 
-COPY sa-project-batch.json .
-RUN gcloud auth activate-service-account --key-file=sa-project-batch.json
-RUN gcloud config set project "dtc-de-zoomcamp-2023-376219"
+# COPY sa-project-batch.json .
+# RUN gcloud auth activate-service-account --key-file=sa-project-batch.json
+# RUN gcloud config set project "dtc-de-zoomcamp-2023-376219"
 RUN ls
 
 EXPOSE 4200

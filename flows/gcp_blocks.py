@@ -10,7 +10,6 @@ import os
 basedir=os.path.abspath(os.path.dirname(__file__))
 load_dotenv(os.path.join(basedir, '../.env'))
 
-load_dotenv("../.env")
 # create gcp credentials block
 credentials_block = GcpCredentials(
     service_account_file="sa-project-batch.json"  # enter your credentials info or use the file method.

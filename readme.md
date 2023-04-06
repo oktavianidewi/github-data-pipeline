@@ -97,7 +97,8 @@ You will be redirected to a new form, please provide the project information det
 3. Once you've updated the file, run this command to spin-up the infrastructure resource up.
 
 ```
-make infra-init-vm:
+make infra-init-vm
+make block-create
 ```
 
 If there is an error like this happens: 

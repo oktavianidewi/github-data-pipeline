@@ -19,7 +19,7 @@ In this project, I am going to implement some data engineering best practices an
 
 This project utilizes such following tools that I learned from Data Engineering zoomcamp. 
 
-- Google Cloud Storage as the data-lake to store our raw dataset.
+- Google Cloud Storage as the datalake to store our raw dataset.
 - Google BigQuery as the data warehouse.
 - dbt core as the transformation tool to implement data modeling.
 - Prefect to manage and monitor our workflow.
@@ -83,8 +83,11 @@ events:
 ## Reproducability
 **Pre-requisites**: I use [Makefile](./Makefile) to make ease the reproducability process. Please install `make` tool in the Ubuntu terminal with this command `sudo apt install make -y`.
 
+### In your local computer
 
-1. Open [google cloud console](https://console.cloud.google.com/) and create a new GCP project by clicking `New Project` button.
+1. Clone this (repository)[https://github.com/oktavianidewi/github-data-pipeline.git] to your local workspace.
+
+2. Open [google cloud console](https://console.cloud.google.com/) and create a new GCP project by clicking `New Project` button.
 
 ![new-project](./images/gcp-create-project.png)
 
@@ -92,9 +95,9 @@ You will be redirected to a new form, please provide the project information det
 
 ![fill-detail-project-info](./images/gcp-fill-project-info.png)
 
-2. Let's create some resources (BigQuery, Cloud Engine and Cloud Storage and Service Account) on top of the newly created project using terraform. You should provide some information such as: `project_id`, `region` and `zone` in [infra/gcp/terraform.tfvars](./infra/gcp/terraform.tfvars) as per your GCP setting.
+3. Let's create some resources (BigQuery, Cloud Engine and Cloud Storage and Service Account) on top of the newly created project using terraform. You should provide some information such as: `project_id`, `region` and `zone` in [infra/gcp/terraform.tfvars](./infra/gcp/terraform.tfvars) as per your GCP setting.
 
-3. Once you've updated the file, run this command to spin-up the infrastructure resource up.
+4. Once you've updated the file, run this command to spin-up the infrastructure resource up.
 
 ```
 make infra-init-vm
@@ -106,21 +109,92 @@ If there is an error like this happens:
 ```
 Please re-run the command again.
 
-4. Run this command to create new VM and generate service-account with terraform
+5. Go to google console dashboard and make sure that all of the resources are built succesfully. 
+- [IAM and Service Account](https://console.cloud.google.com/iam-admin)
+![generated iam](./images/iam-check.png)
+![generated service-account key](./images/iam-check.png)
+
+- [Cloud Storage](https://console.cloud.google.com/storage/browser)
+![cloud storage resource](./images/gcs-check.png)
+
+- [Compute Engine](https://console.cloud.google.com/compute/instances)
+![compute engine resource](./images/gce-check.png)
+
+- [BigQuery](https://console.cloud.google.com/bigquery)
+![BigQuery resource](./images/bigquery-check.png)
+
+- `/ssh` folder contains ssh-key to access newly created Compute Engine. Copy this file to your `home/.ssh` directory
+```
+cp ssh/github-pipeline-project ~/.ssh/
+```
+
+### Connect to GCE
+
+5. Connect to GCE using SSH
 
 ```
-make xxx
+ssh -i ~/.ssh/github-pipeline-project <your-email-address-for-gcp>@<external-vm-ip>
 ```
 
-5. Open Google Cloud Engine, copy IP ssh to home directory.
+6. Once you've got succesfully connected to the VM. Clone [this repository](https://github.com/oktavianidewi/github-data-pipeline.git), install `make` tool and terraform inside the VM.
 
-6. Insert to GCE using SSH
+```
+git clone https://github.com/oktavianidewi/github-data-pipeline.git
 
-7. Clone repository, install make, install initial setup using make
+sudo apt install make -y
 
-8. Run make command 
+make install-terraform
+```
 
+8. Run initial setup for vm with `make` command, that will install `docker`, `docker-compose`, `pip` and `jq` tools.
+```
+make initial-setup-vm
+```
+
+9. Run prefect server and agent in VM with this command
+```
+export PREFECT_ORION_UI_API_URL=http://<external-vm-ip>:4200/api 
+
+make docker-spin-up
+
+```
+10. Go to your browser and paste `http://<external-vm-ip>:4200` on URL bar to open prefect dashboard.
+
+![VM-hosted prefect-core on browser](./images/prefect-dashboard.png)
+
+11. Start historical data ingestion to cloud storage with this command
+```
+make ingest-data
+```
+This command will create a prefect flow deployment to: 
+- read data from github events
+- chunk data into a certain rows
+- type cast data as needed
+- store data into cloud storage partitioned by its `year`, `month` and `day`.
+
+12. To ingest moving-forward data run this command: 
+```
+make set-daily-ingest-data
+```
+This command will schedule a deployment in prefect to run daily ingestion data at 00.01.
+
+13. Once all the raw data are stored in the datalake, we can start transforming the raw data into our data warehouse with dbt. Run this command to transform data to `dev` environment.
+
+```
+make transform-data-dev
+```
+
+14. To transform data to a production environment, run this command
+```
+make transform-data-prod
+```
+
+15. To set daily transformation data to the production environment, run this command:
+```
+make set-daily-transform-data-prod
+```
 
 ## Improvements
-
-There are many things can be improved
+There are many things can be improved: 
+- Use CI/CD
+- Implement testing

@@ -9,7 +9,7 @@ from calendar import monthrange
 from datetime import date
 
 
-@task(retries=3, log_prints=True)
+# @task(retries=3, log_prints=True)
 def fetch_chunk_clean_write(dataset_url: str, **kwargs) -> None:
     """Read taxi data from web into pandas DataFrame"""
     
@@ -62,12 +62,12 @@ def gen_days(year: int, months: list, days: list) -> list:
                 gen_days.append(monthrange(year, month)[1])
     return gen_days
 
-@flow(log_prints=True)
+# @flow(log_prints=True)
 def etl_web_to_gcs(year: int, months: list, days: list, **kwargs) -> None:
     """The main ETL function"""
     custom_days = gen_days(year, months, days)
     for month in months:
-        for day in custom_days:
+        for day in range(0, custom_days[0]+1):
             print(f"days {day:02}")
             for hour in range (1, 24):
                 dataset_file = f"{year}-{month:02}-{day:02}-{hour}"
@@ -78,7 +78,7 @@ def etl_web_to_gcs(year: int, months: list, days: list, **kwargs) -> None:
 if __name__ == "__main__":
     # parameterized
     year = 2023
-    months = [1] # 1, 2, 3
+    months = [4] # 1, 2, 3
     days = ["current"] # 01..31
 
     etl_web_to_gcs(year, months, days)

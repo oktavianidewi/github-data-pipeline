@@ -4,9 +4,9 @@ This project showcases the best practice on what I've been learning from Data En
 
 You must have known about Github. GitHub is where people build software. More than 100 million people use GitHub to discover, fork, and contribute to over 330 million projects. 
 
-It is very interesting that Github user activities are publicly available [here](https://www.gharchive.org/). The dataset are grouped on hourly basis and stored in a JSON format. Each user activity is labeled with event type, such as: `push`, `pull-request`, `issues`, `commit`, etc. There are >150K rows of activities recorded in each dataset. In average, the size of the daily data is around 1,4GB! Such a quite large amount of data. This dataset is updated daily.
+It is very interesting that Github user activities are publicly available [here](https://www.gharchive.org/). The dataset are grouped on hourly basis and stored in a JSON format. Each user activity is labeled with event type, such as: `push`, `pull-request`, `issues`, `commit`, etc. There are >150K rows of activities recorded in each dataset. In average, the size of the daily data is around 1,4GB and this dataset is updated daily.
 
-With this such a big dataset, I am going to implement some data engineering best practices and gain interesting metrics, such as:  
+In this project, I am going to implement some data engineering best practices and gain interesting metrics, such as:  
 - daily most issue created from repository
 - daily most forked repository
 - daily most active users (count by number of push)
@@ -81,13 +81,29 @@ events:
 ## Dashboard Preview
 
 ## Reproducability
-1. Open [google cloud console](https://console.cloud.google.com/) and create a new GCP project.
+**Pre-requisites**: I use [Makefile](./Makefile) to make ease the reproducability process. Please install `make` tool in the Ubuntu terminal with this command `sudo apt install make -y`.
 
-{{2 GAMBAR create GCP Project}}
 
-2. Change `project_id`, `region` and `zone` variables in (infra/gcp/terraform.tfvars)[link] as per your setting.
+1. Open [google cloud console](https://console.cloud.google.com/) and create a new GCP project by clicking `New Project` button.
 
-3. Install make tools
+![new-project](./images/gcp-create-project.png)
+
+You will be redirected to a new form, please provide the project information detail, copy the `project_id` and click `Create` button.
+
+![fill-detail-project-info](./images/gcp-fill-project-info.png)
+
+2. Let's create some resources (BigQuery, Cloud Engine and Cloud Storage and Service Account) on top of the newly created project using terraform. You should provide some information such as: `project_id`, `region` and `zone` in [infra/gcp/terraform.tfvars](./infra/gcp/terraform.tfvars) as per your GCP setting.
+
+3. Once you've updated the file, run this command to spin-up the infrastructure resource up.
+
+```
+make infra-init-vm:
+```
+
+If there is an error like this happens: 
+```
+```
+Please re-run the command again.
 
 4. Run this command to create new VM and generate service-account with terraform
 

@@ -1,7 +1,7 @@
 // Change these information as your GCP ProjectId, region and zone setting
-project_id = "pacific-decoder-382709"
-region     = "asia-southeast1"
-zone       = "asia-southeast1-b"
+project_id = "pacific-decoder-382709" # CHANGE-THIS
+region     = "asia-southeast1"        # CHANGE-THIS
+zone       = "asia-southeast1-b"      # CHANGE-THIS
 
 account_id         = "sa-github-pipeline-project"
 vpc_network_name   = "vpc-github-pipeline"

@@ -26,14 +26,25 @@ infra-up:
 generate-sa:
 	terraform -chdir=infra/vm output sa_private_key | base64 -di | jq > sa-project-batch.json
 
-generate-sa-vm:
-	terraform -chdir=infra/gcp output sa_private_key | base64 -di | jq > sa-github-pipeline-project.json
-
 infra-down:
 	terraform -chdir=infra/sa destroy
 	rm -rf sa-project-batch.json
 
-copy-sa-to-vm:
+
+infra-init-vm:
+	terraform -chdir=./infra/gcp init
+
+infra-up-vm:
+	terraform -chdir=infra/gcp apply -var-file=terraform.tfvars
+
+generate-service-account-vm:
+	terraform -chdir=infra/gcp output sa_private_key | base64 -di | jq > sa-github-pipeline-project.json
+
+infra-down-vm:
+	terraform -chdir=infra/gcp destroy -var-file=terraform.tfvars
+	rm -rf sa-github-pipeline-project.json
+
+copy-service-account-to-vm:
 	gcloud compute scp --project="pacific-decoder-382709" --zone="asia-southeast1-b" sa-github-pipeline-project.json learndewi@vm-github-pipeline:"~/github-data-pipeline"
 	
 # Set up prefect server and agent

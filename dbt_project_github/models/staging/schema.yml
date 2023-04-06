@@ -2,11 +2,10 @@ version: 2
 
 sources: 
   - name: staging
-    database: dtc-de-zoomcamp-2023-376219 # database = project_id in bq
-    schema: tf_dataset_bq # schema = dataset in bq
+    database: pacific-decoder-382709 # database = project_id in bq
+    schema: raw_github_events # schema = dataset in bq
     tables: 
-      - name: tf_table_github
-      # - name: stg_github_data
+      - name: github_events
   
 models:
   - name: stg_github_data
@@ -26,12 +25,3 @@ models:
       - name: year
       - name: month
       - name: day
-
-#   - name: my_second_dbt_model
-#     description: "A starter dbt model"
-#     columns:
-#       - name: id
-#         description: "The primary key for this table"
-#         tests:
-#           - unique
-#           - not_null

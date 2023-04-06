@@ -13,7 +13,6 @@ initial-setup-vm:
 	sudo apt install docker docker-compose python3-pip jq -y
 	sudo chmod 666 /var/run/docker.sock
 
-
 # Set up cloud infrastructure
 infra-init-vm:
 	terraform -chdir=./infra/gcp init
@@ -29,7 +28,7 @@ infra-down-vm:
 	rm -rf sa-github-pipeline-project.json
 
 copy-service-account-to-vm:
-	gcloud compute scp --project="pacific-decoder-382709" --zone="asia-southeast1-b" sa-github-pipeline-project.json learndewi@vm-github-pipeline:"~/github-data-pipeline"
+	gcloud compute scp --project="${GCP_PROJECT_ID}" --zone="${GCP_ZONE}" sa-github-pipeline-project.json ${GCP_EMAIL_WITHOUT_DOMAIN_NAME}@vm-github-pipeline:"~/github-data-pipeline"
 	
 # Running up prefect server and agent
 docker-spin-up:
@@ -71,9 +70,11 @@ set-daily-transform-data-prod:
 	docker-compose run job flows/deploy_dbt_command.py \
 		--target prod \
 		--type run \
-		--cron '1 0 * * *'
+		--cron '1 3 * * *'
 
-
+generate-sa:
+	sudo apt install jq -y
+	terraform -chdir=infra/vm output sa_private_key | base64 -di | jq > sa-github-pipeline-project.json
 
 #######################################################################
 # local setup
@@ -88,9 +89,6 @@ infra-init:
 
 infra-up:
 	terraform -chdir=./infra/sa apply
-
-generate-sa:
-	terraform -chdir=infra/vm output sa_private_key | base64 -di | jq > sa-project-batch.json
 
 infra-down:
 	terraform -chdir=infra/sa destroy

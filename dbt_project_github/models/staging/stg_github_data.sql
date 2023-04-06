@@ -23,7 +23,7 @@ WITH ranked AS (
         PARTITION BY id
         ORDER BY created_at DESC NULLS LAST
         ) AS __rank
-    FROM {{ source('staging', 'tf_table_github') }}
+    FROM {{ source('staging', 'github_events') }}
 
   {% if is_incremental() %}
     WHERE created_at > 

@@ -2,15 +2,15 @@ version: 2
 
 sources: 
   - name: staging
-    database: dtc-de-zoomcamp-2023-376219 # database = project_id in bq
-    schema: tf_dataset_bq # schema = dataset in bq
+    database: pacific-decoder-382709 # CHANGE-THIS database = project_id in bq
+    schema: raw_github_events # CHANGE-THIS schema = dataset in bq
 
     tables: 
       - name: stg_github_data
 
   - name: core
-    database: dtc-de-zoomcamp-2023-376219 # database = project_id in bq
-    schema: tf_dataset_bq # schema = dataset in bq
+    database: pacific-decoder-382709 # database = project_id in bq
+    schema: raw_github_events # schema = dataset in bq
 
     tables: 
       - name: fact_github_events_by_human

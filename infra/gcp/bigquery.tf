@@ -1,16 +1,10 @@
 resource "google_bigquery_dataset" "raw_dataset" {
-  # dataset_id = local.raw_bq_dataset
-  # project    = local.project_id
-  # location   = local.region
   dataset_id = var.raw_bq_dataset
   project    = var.project_id
   location   = var.region
 }
 
 resource "google_bigquery_dataset" "dev_dataset" {
-  # dataset_id                 = local.dev_bq_dataset
-  # project                    = local.project_id
-  # location                   = local.region
   dataset_id                 = var.dev_bq_dataset
   project                    = var.project_id
   location                   = var.region
@@ -18,9 +12,6 @@ resource "google_bigquery_dataset" "dev_dataset" {
 }
 
 resource "google_bigquery_dataset" "prod_dataset" {
-  # dataset_id                 = local.prod_bq_dataset
-  # project                    = local.project_id
-  # location                   = local.region
   dataset_id                 = var.prod_bq_dataset
   project                    = var.project_id
   location                   = var.region
@@ -28,17 +19,16 @@ resource "google_bigquery_dataset" "prod_dataset" {
 }
 
 resource "google_bigquery_table" "table" {
-  dataset_id = google_bigquery_dataset.raw_dataset.dataset_id
-  # table_id            = local.table_id
+  dataset_id          = google_bigquery_dataset.raw_dataset.dataset_id
   table_id            = var.table_id
   deletion_protection = false
   external_data_configuration {
     autodetect    = false # true
-    source_uris   = ["gs://${google_storage_bucket.data-lake-bucket.name}/data/*"]
+    source_uris   = ["gs://${google_storage_bucket.data-lake-bucket.name}/*"]
     source_format = "PARQUET"
     hive_partitioning_options {
       mode                     = "CUSTOM"
-      source_uri_prefix        = "gs://${google_storage_bucket.data-lake-bucket.name}/data/{year:STRING}/{month:STRING}/{day:STRING}"
+      source_uri_prefix        = "gs://${google_storage_bucket.data-lake-bucket.name}/{year:STRING}/{month:STRING}/{day:STRING}"
       require_partition_filter = false
     }
   }

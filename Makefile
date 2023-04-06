@@ -2,10 +2,8 @@ SHELL := /bin/bash
 
 include .env
 
-initial-setup: 
-	sudo apt-get update
-	sudo apt install docker docker-compose python3-pip make -y
-	sudo chmod 666 /var/run/docker.sock
+#######################################################################
+# vm setup
 
 install-terraform: 
 	chmod +x script/install-terraform.sh && script/install-terraform.sh
@@ -29,7 +27,7 @@ generate-service-account-vm:
 infra-down-vm:
 	terraform -chdir=infra/gcp destroy -var-file=terraform.tfvars
 	rm -rf sa-github-pipeline-project.json
-	
+
 copy-service-account-to-vm:
 	gcloud compute scp --project="pacific-decoder-382709" --zone="asia-southeast1-b" sa-github-pipeline-project.json learndewi@vm-github-pipeline:"~/github-data-pipeline"
 	
@@ -46,7 +44,7 @@ docker-spin-down:
 block-create:
 	docker-compose run job flows/gcp_blocks.py
 
-# Run data ingestion
+# Run and set schedule for data ingestion
 ingest-data:
 	docker-compose run job flows/deploy_ingest.py \
 		--name "github-data" \
@@ -58,6 +56,7 @@ set-daily-ingest-data:
 		--params='{"year": $(shell date +'%Y'), "months":[$(shell date +'%-m')], "days":["current"], "kwargs" : {"CHUNK_SIZE":${CHUNK_SIZE}, "GCP_PROJECT_ID":${GCP_PROJECT_ID}, "GCS_BUCKET_ID":${GCS_BUCKET_ID}, "GCS_PATH":${GCS_PATH} } }' \
 		--cron "1 0 * * *"
 
+# Run and set schedule for data transformation 
 transform-data-dev:
 	docker-compose run job flows/deploy_dbt_command.py \
 		--target dev \
@@ -76,9 +75,14 @@ set-daily-transform-data-prod:
 
 
 
+#######################################################################
+# local setup
 
-
-
+initial-setup: 
+	sudo apt-get update
+	sudo apt install docker docker-compose python3-pip make -y
+	sudo chmod 666 /var/run/docker.sock
+	
 infra-init:
 	terraform -chdir=./infra/sa init
 
@@ -94,10 +98,6 @@ infra-down:
 	
 prefect-start: 
 	chmod +x script/prefect.sh && script/prefect.sh
-
-
-
-
 
 local-ingest-start:
 	source .env
@@ -137,3 +137,5 @@ schedule-daily-run-model-prod:
 		--params='{"target": "prod"}' \
     	--cron='1 1 * * *' \
     	--apply
+
+#######################################################################

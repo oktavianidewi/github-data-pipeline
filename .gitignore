@@ -22,3 +22,9 @@ sa-project-batch.json
 *-deployment.yaml
 
 ssh/
+
+Pipfile
+Pipfile.lock
+notes.md
+requirements.txt
+.user.yml

@@ -28,10 +28,10 @@ generate-service-account-vm:
 
 infra-down-vm:
 	terraform -chdir=infra/gcp destroy -var-file=terraform.tfvars
-
-# rm -rf sa-github-pipeline-project.json
-# copy-service-account-to-vm:
-# 	gcloud compute scp --project="pacific-decoder-382709" --zone="asia-southeast1-b" sa-github-pipeline-project.json learndewi@vm-github-pipeline:"~/github-data-pipeline"
+	rm -rf sa-github-pipeline-project.json
+	
+copy-service-account-to-vm:
+	gcloud compute scp --project="pacific-decoder-382709" --zone="asia-southeast1-b" sa-github-pipeline-project.json learndewi@vm-github-pipeline:"~/github-data-pipeline"
 	
 # Running up prefect server and agent
 docker-spin-up:
